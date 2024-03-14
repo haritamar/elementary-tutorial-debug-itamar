@@ -1,29 +1,34 @@
-version: 2
-
 models:
-  - name: stg_customers
-    config:
-      tags: ["staging", "PII"]
-    columns:
-      - name: customer_id
-
-  - name: stg_orders
-    config:
-      tags: ["staging", "finance"]
-    columns:
-      - name: order_id
-      - name: status
-
-  - name: stg_payments
-    config:
-      tags: ["staging", "finance"]
-    columns:
-      - name: payment_id
-      - name: payment_method
-
-  - name: stg_signups
-    config:
-      tags: ["staging", "PII"]
-    columns:
-      - name: signup_id
-      - name: customer_email
+- columns:
+  - {name: customer_id}
+  config:
+    tags: [staging, PII]
+  name: stg_customers
+- columns:
+  - {name: order_id}
+  - {name: status}
+  config:
+    tags: [staging, finance]
+  name: stg_orders
+- columns:
+  - {name: payment_id}
+  - {name: payment_method}
+  config:
+    tags: [staging, finance]
+  name: stg_payments
+- columns:
+  - {name: signup_id}
+  - {name: customer_email}
+  config:
+    tags: [staging, PII]
+  name: stg_signups
+  tests:
+  - elementary.volume_anomalies:
+      backfill_days: 2
+      config: {severity: error}
+      days_back: 14
+      meta: {description: Checking for anomalies in the size and growth of a table by comparing the row count of each 1 days period to the last 14 days}
+      sensitivity: 3
+      time_bucket: {count: 1, period: day}
+      timestamp_column: pasten
+version: 2
