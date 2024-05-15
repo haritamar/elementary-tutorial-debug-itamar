@@ -27,3 +27,10 @@ models:
     columns:
       - name: signup_id
       - name: customer_email
+    tests:
+      - volume_anomalies:
+          timestamp_column: signup_date
+          config:
+            tags:
+              - elementary_recommendation
+            severity: warn
